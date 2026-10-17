@@ -1,0 +1,48 @@
+{# auth/register.html - form for creating a manager account #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{# Page heading; the nested title block also sets the browser tab title #}
+{% block header %}
+  <h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {# row + justify-content-center centers the column; col-md-6 col-lg-4 = narrower box on bigger screens #}
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      {# card = white box with a border; shadow-sm = light shadow #}
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+          {# method="post" sends the form as a POST request to this same URL (/auth/register) #}
+          <form method="post">
+            {# mb-3 = margin below each field #}
+            <div class="mb-3">
+              {# for="username" links the label to the input with id="username" #}
+              <label for="username" class="form-label">Username</label>
+              {# name="username" is the key Python reads with request.form["username"].
+                 value keeps what the user typed if the form shows an error.
+                 required = the browser won't submit an empty field. #}
+              <input name="username" id="username" class="form-control"
+                     value="{{ request.form['username'] }}" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              {# type="password" hides the characters as they are typed #}
+              <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+            {# w-100 = full-width blue button; type="submit" sends the form #}
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+          </form>
+
+        </div>
+      </div>
+      {# Link for people who already have an account #}
+      <p class="text-center mt-3">
+        Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}

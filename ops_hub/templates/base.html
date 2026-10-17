@@ -46,21 +46,29 @@
       <div class="collapse navbar-collapse" id="mainNav">
 
         {# Page links on the left. me-auto pushes everything after this list to the right side.
+           g.user is set in auth.py; the page links only show when someone is logged in.
            TEMPORARY: href="#" placeholders - each one becomes url_for(...) when we build that page. #}
         <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Students</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Projects</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Schedules</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Systems</a></li>
+          {% if g.user %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Students</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Schedules</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Systems</a></li>
+          {% endif %}
         </ul>
 
-        {# Account links on the right.
-           TEMPORARY: placeholders until Step 5, when we add login and show
-           Register/Log In or the username/Log Out depending on who is logged in. #}
+        {# Account links on the right side #}
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="#">Register</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Log In</a></li>
+          {% if g.user %}
+            {# Logged in: show who it is (navbar-text = plain text styled for the navbar) and a Log Out link #}
+            <li class="nav-item"><span class="navbar-text me-3">Signed in as {{ g.user['username'] }}</span></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a></li>
+          {% else %}
+            {# Not logged in: show Register and Log In #}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a></li>
+          {% endif %}
         </ul>
 
       </div>

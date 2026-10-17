@@ -13,8 +13,9 @@
 {% block content %}
   <div class="card shadow-sm">
     <div class="card-body">
-      <h5 class="card-title">Layout test</h5>
-      <p class="card-text">If this page has a dark navbar and a green message above, Bootstrap is working.</p>
+      {# g.user is the logged-in user loaded in auth.py; ['username'] reads that column #}
+      <h5 class="card-title">Welcome, {{ g.user['username'] }}!</h5>
+      <p class="card-text">You are logged in. The dashboard will go here.</p>
     </div>
   </div>
 {% endblock %}
