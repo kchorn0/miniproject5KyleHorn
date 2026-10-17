@@ -1,0 +1,15 @@
+# Virtual environment
+.venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Flask instance folder (holds the SQLite database file)
+instance/
+
+# VS Code settings
+.vscode/
+
+# Assignment instructions - not part of the app
+Requirements and instructions.txt
