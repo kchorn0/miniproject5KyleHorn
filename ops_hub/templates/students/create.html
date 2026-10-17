@@ -1,0 +1,67 @@
+{# students/create.html - form for adding a new student employee #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Add Student{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {# col-lg-8 = the form uses 8 of 12 columns on large screens so it isn't too wide #}
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        {# method="post" sends the form to this same URL (/students/create) #}
+        <form method="post">
+
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            {# request.form.get('name', '') refills what was typed if there was an error;
+               on the first visit the form is empty, so it uses '' #}
+            <input name="name" id="name" class="form-control"
+                   value="{{ request.form.get('name', '') }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            {# type="email" makes the browser check for an @ sign #}
+            <input type="email" name="email" id="email" class="form-control"
+                   value="{{ request.form.get('email', '') }}">
+          </div>
+
+          <div class="mb-3">
+            <label for="role" class="form-label">Job Title / Role</label>
+            {# placeholder = gray hint text that disappears when you type #}
+            <input name="role" id="role" class="form-control" placeholder="e.g. Help Desk Assistant"
+                   value="{{ request.form.get('role', '') }}">
+          </div>
+
+          <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            {# Dropdown menu. form-select is Bootstrap's style for select boxes. #}
+            <select name="status" id="status" class="form-select">
+              {# Build one option per allowed status (the list comes from students.py).
+                 "selected" picks the default: what was submitted, or Active on first visit. #}
+              {% for status in statuses %}
+                <option {% if status == request.form.get('status', 'Active') %}selected{% endif %}>{{ status }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="notes" class="form-label">Notes</label>
+            {# textarea = a multi-line text box; rows="3" sets its height #}
+            <textarea name="notes" id="notes" class="form-control" rows="3">{{ request.form.get('notes', '') }}</textarea>
+          </div>
+
+          {# Save submits the form; Cancel is just a link back to the list #}
+          <button type="submit" class="btn btn-primary">Save</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('students.index') }}">Cancel</a>
+        </form>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

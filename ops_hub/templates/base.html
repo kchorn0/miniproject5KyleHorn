@@ -47,11 +47,13 @@
 
         {# Page links on the left. me-auto pushes everything after this list to the right side.
            g.user is set in auth.py; the page links only show when someone is logged in.
-           TEMPORARY: href="#" placeholders - each one becomes url_for(...) when we build that page. #}
+           TEMPORARY: href="#" placeholders - each one becomes url_for(...) when we build that page.
+           request.blueprint is the blueprint of the current page; if it matches, the link
+           gets the "active" class so it shows brighter (tells you which page you're on). #}
         <ul class="navbar-nav me-auto">
           {% if g.user %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Students</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.blueprint == 'students' %}active{% endif %}" href="{{ url_for('students.index') }}">Students</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Projects</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Schedules</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Systems</a></li>

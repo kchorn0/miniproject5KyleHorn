@@ -1,0 +1,71 @@
+{# students/index.html - table of all student employees #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{% block header %}
+  {# d-flex + justify-content-between puts the heading on the left and the button on the right #}
+  <div class="d-flex justify-content-between align-items-center">
+    <h1>{% block title %}Student Employees{% endblock %}</h1>
+    {# Link styled as a blue button that opens the Add Student form #}
+    <a class="btn btn-primary" href="{{ url_for('students.create') }}">Add Student</a>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      {# Only build the table if there is at least one student #}
+      {% if students %}
+        {# table-responsive lets the table scroll sideways on small screens #}
+        <div class="table-responsive">
+          {# table-hover highlights the row under the mouse; align-middle centers text vertically #}
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Notes</th>
+                {# Empty header for the Edit button column #}
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {# Loop over each student row sent from students.py #}
+              {% for student in students %}
+                <tr>
+                  <td>{{ student['name'] }}</td>
+                  {# "or '—'" shows a dash when the field is empty #}
+                  <td>{{ student['email'] or '—' }}</td>
+                  <td>{{ student['role'] or '—' }}</td>
+                  <td>
+                    {# Badge = small colored label. Green for Active, gray for Inactive. #}
+                    {% if student['status'] == 'Active' %}
+                      <span class="badge text-bg-success">Active</span>
+                    {% else %}
+                      <span class="badge text-bg-secondary">Inactive</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ student['notes'] or '—' }}</td>
+                  {# text-end pushes the button to the right edge of the cell #}
+                  <td class="text-end">
+                    {# url_for fills in this student's id, for example /students/3/update #}
+                    <a class="btn btn-sm btn-outline-primary"
+                       href="{{ url_for('students.update', id=student['id']) }}">Edit</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {# No students yet: show a friendly message instead of an empty table #}
+      {% else %}
+        <p class="text-muted mb-0">No student employees yet. Click "Add Student" to add one.</p>
+      {% endif %}
+
+    </div>
+  </div>
+{% endblock %}

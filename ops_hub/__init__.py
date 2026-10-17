@@ -57,6 +57,11 @@ def create_app(test_config=None):
     # Register the auth blueprint so its /auth/... routes become part of the app
     app.register_blueprint(auth.bp)
 
+    # Import and register the student employee pages (/students/...)
+    from . import students
+
+    app.register_blueprint(students.bp)
+
     # Temporary test route - replaced by the dashboard in a later step.
     # @app.route("/") connects the home page URL to the function below it.
     @app.route("/")

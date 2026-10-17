@@ -1,0 +1,105 @@
+{# students/update.html - form for editing a student, plus a Delete button with a confirmation modal #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit {{ student['name'] }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        {# method="post" sends the form to this same URL (/students/<id>/update) #}
+        <form method="post">
+
+          {# Each field shows what was just typed (if the form had an error),
+             otherwise the student's saved value. "or ''" turns an empty (None) value into blank text. #}
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input name="name" id="name" class="form-control"
+                   value="{{ request.form.get('name', student['name']) }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" id="email" class="form-control"
+                   value="{{ request.form.get('email', student['email'] or '') }}">
+          </div>
+
+          <div class="mb-3">
+            <label for="role" class="form-label">Job Title / Role</label>
+            <input name="role" id="role" class="form-control"
+                   value="{{ request.form.get('role', student['role'] or '') }}">
+          </div>
+
+          <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select name="status" id="status" class="form-select">
+              {# Pre-select the student's current status #}
+              {% for status in statuses %}
+                <option {% if status == request.form.get('status', student['status']) %}selected{% endif %}>{{ status }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea name="notes" id="notes" class="form-control" rows="3">{{ request.form.get('notes', student['notes'] or '') }}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('students.index') }}">Cancel</a>
+
+          {# Red Delete button on the right (float-end). It does NOT delete anything -
+             data-bs-toggle="modal" + data-bs-target tell Bootstrap to open the modal below.
+             type="button" stops it from submitting the edit form. #}
+          <button type="button" class="btn btn-outline-danger float-end"
+                  data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  {# ===== Bootstrap modal: a pop-up box asking "Are you sure?" before deleting =====
+     It is hidden until the Delete button above opens it.
+     id="deleteModal" must match the button's data-bs-target.
+     fade = smooth fade-in animation; tabindex="-1" lets the Esc key close it. #}
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    {# modal-dialog-centered = show the box in the middle of the screen #}
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        {# Top of the pop-up: title and an X close button #}
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete {{ student['name'] }}?</h5>
+          {# data-bs-dismiss="modal" closes the pop-up without doing anything #}
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        {# Middle: explain what will happen (the foreign key rules from schema.sql) #}
+        <div class="modal-body">
+          <p>This permanently deletes this student employee.</p>
+          <ul class="mb-0">
+            <li>Their scheduled shifts will also be deleted.</li>
+            <li>Their projects will stay but become <strong>Unassigned</strong>.</li>
+          </ul>
+        </div>
+
+        {# Bottom: Cancel closes the pop-up; the red button really deletes #}
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          {# A separate small form that POSTs to the delete route.
+             Deleting needs POST (not a plain link) so it can't happen by accident. #}
+          <form action="{{ url_for('students.delete', id=student['id']) }}" method="post">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
