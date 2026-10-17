@@ -1,0 +1,107 @@
+{# projects/update.html - form for editing a project (including its status), plus a Delete modal #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit Project{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        {# Sends a POST request to this same URL (/projects/<id>/update) #}
+        <form method="post">
+
+          {# Each field shows what was just typed (if there was an error), otherwise the saved value.
+             "or ''" turns an empty (None) value into blank text. #}
+          <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input name="title" id="title" class="form-control"
+                   value="{{ request.form.get('title', project['title']) }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="description" id="description" class="form-control" rows="3">{{ request.form.get('description', project['description'] or '') }}</textarea>
+          </div>
+
+          {# The currently assigned student's id as text ("" if Unassigned), used to pre-select the dropdown #}
+          {% set current_student = request.form.get('student_id', (project['student_id'] or '')|string) %}
+          <div class="mb-3">
+            <label for="student_id" class="form-label">Assigned To</label>
+            <select name="student_id" id="student_id" class="form-select">
+              <option value="">Unassigned</option>
+              {% for student in students %}
+                <option value="{{ student['id'] }}"
+                        {% if student['id']|string == current_student %}selected{% endif %}>
+                  {{ student['name'] }}{% if student['status'] == 'Inactive' %} (Inactive){% endif %}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="priority" class="form-label">Priority</label>
+              <select name="priority" id="priority" class="form-select">
+                {% for priority in priorities %}
+                  <option {% if priority == request.form.get('priority', project['priority']) %}selected{% endif %}>{{ priority }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="due_date" class="form-label">Due Date</label>
+              <input type="date" name="due_date" id="due_date" class="form-control"
+                     value="{{ request.form.get('due_date', project['due_date'] or '') }}">
+            </div>
+
+            <div class="col-md-4 mb-3">
+              {# Change the status here to update progress (for example, In Progress -> Completed) #}
+              <label for="status" class="form-label">Status</label>
+              <select name="status" id="status" class="form-select">
+                {% for status in statuses %}
+                  <option {% if status == request.form.get('status', project['status']) %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('projects.index') }}">Cancel</a>
+
+          {# Opens the confirmation modal below (does not delete by itself) #}
+          <button type="button" class="btn btn-outline-danger float-end"
+                  data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  {# ===== Bootstrap modal: "Are you sure?" pop-up before deleting (same pattern as the Students page) ===== #}
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Delete this project?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {# Show which project will be deleted #}
+          <p class="mb-0">"<strong>{{ project['title'] }}</strong>" will be permanently deleted.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          {# Small POST form that sends the delete request #}
+          <form action="{{ url_for('projects.delete', id=project['id']) }}" method="post">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

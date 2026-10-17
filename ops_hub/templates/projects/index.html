@@ -1,0 +1,82 @@
+{# projects/index.html - table of all projects and who they're assigned to #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{% block header %}
+  {# Heading on the left, Add button on the right #}
+  <div class="d-flex justify-content-between align-items-center">
+    <h1>{% block title %}Projects &amp; Assignments{% endblock %}</h1>
+    <a class="btn btn-primary" href="{{ url_for('projects.create') }}">Add Project</a>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      {# Only build the table if there is at least one project #}
+      {% if projects %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Assigned To</th>
+                <th>Priority</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {# Loop over each project row sent from projects.py #}
+              {% for project in projects %}
+                {# Overdue = has a due date, it's before today, and it isn't Completed.
+                   {% set %} saves the True/False result in a variable we can reuse below. #}
+                {% set overdue = project['due_date'] and project['due_date'] < today and project['status'] != 'Completed' %}
+                <tr>
+                  <td>
+                    {# Title in bold, with the description underneath in small gray text #}
+                    <div class="fw-semibold">{{ project['title'] }}</div>
+                    {% if project['description'] %}
+                      <div class="small text-muted">{{ project['description'] }}</div>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {# student_name comes from the JOIN; it's empty when the project is Unassigned #}
+                    {% if project['student_name'] %}
+                      {{ project['student_name'] }}
+                    {% else %}
+                      <span class="text-muted fst-italic">Unassigned</span>
+                    {% endif %}
+                  </td>
+                  {# priority_colors["High"] gives "danger", so the class becomes text-bg-danger (red) #}
+                  <td><span class="badge text-bg-{{ priority_colors[project['priority']] }}">{{ project['priority'] }}</span></td>
+                  <td>
+                    {# Overdue dates show in bold red with an "Overdue" label #}
+                    {% if overdue %}
+                      <span class="text-danger fw-semibold">{{ project['due_date'] }}</span>
+                      <span class="badge text-bg-danger">Overdue</span>
+                    {% else %}
+                      {{ project['due_date'] or '—' }}
+                    {% endif %}
+                  </td>
+                  <td><span class="badge text-bg-{{ status_colors[project['status']] }}">{{ project['status'] }}</span></td>
+                  <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary"
+                       href="{{ url_for('projects.update', id=project['id']) }}">Edit</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {# No projects yet #}
+      {% else %}
+        <p class="text-muted mb-0">No projects yet. Click "Add Project" to create one.</p>
+      {% endif %}
+
+    </div>
+  </div>
+{% endblock %}

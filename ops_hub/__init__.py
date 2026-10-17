@@ -62,6 +62,11 @@ def create_app(test_config=None):
 
     app.register_blueprint(students.bp)
 
+    # Import and register the projects and assignments pages (/projects/...)
+    from . import projects
+
+    app.register_blueprint(projects.bp)
+
     # Temporary test route - replaced by the dashboard in a later step.
     # @app.route("/") connects the home page URL to the function below it.
     @app.route("/")
