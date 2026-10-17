@@ -1,14 +1,16 @@
-# Virtual environment
+# .gitignore lists files and folders Git should never track or upload to GitHub.
+
+# Virtual environment - large and computer-specific; others rebuild it from requirements.txt
 .venv/
 
-# Python cache files
+# Python cache files - created automatically when Python runs our code
 __pycache__/
 *.pyc
 
-# Flask instance folder (holds the SQLite database file)
+# Flask instance folder - holds the SQLite database; each person creates their own with init-db
 instance/
 
-# VS Code settings
+# VS Code settings - personal editor preferences, not part of the app
 .vscode/
 
 # Assignment instructions - not part of the app

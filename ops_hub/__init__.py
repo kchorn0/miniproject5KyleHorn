@@ -2,39 +2,57 @@
 # Kyle Horn
 # Mini Project 5
 
+# This file makes the ops_hub folder a Python package and builds the Flask app.
+
+# os lets us build file paths and create folders
 import os
 
+# Flask is the class that creates our web application
 from flask import Flask
 
 
+# Application factory: Flask looks for a function named create_app() to build the app.
+# test_config lets us pass in different settings (for example, a test database).
 def create_app(test_config=None):
     """Create and configure the Student Operations Hub Flask app."""
+    # Create the app. __name__ tells Flask where this package lives so it can find
+    # the templates and static folders. instance_relative_config=True means private
+    # files (like the database) are stored in the instance/ folder.
     app = Flask(__name__, instance_relative_config=True)
 
-    # Default settings. SECRET_KEY signs the login session cookie;
-    # "dev" is fine for local development only.
+    # Set the default settings for the app
     app.config.from_mapping(
+        # SECRET_KEY signs the login session cookie so users can't fake being logged in.
+        # "dev" is fine for local development only.
         SECRET_KEY="dev",
+        # Where the SQLite database file is saved: instance/ops_hub.sqlite
         DATABASE=os.path.join(app.instance_path, "ops_hub.sqlite"),
     )
 
+    # Normal run (not testing)
     if test_config is None:
-        # Load instance/config.py if it exists (lets you override SECRET_KEY)
+        # Load instance/config.py if it exists. silent=True means don't crash if it's missing.
         app.config.from_pyfile("config.py", silent=True)
+    # Testing: use the settings that were passed in instead
     else:
         app.config.update(test_config)
 
-    # Make sure the instance folder exists so the database can be created there
+    # Create the instance/ folder if it doesn't exist yet so the database has a place to go.
+    # exist_ok=True means don't error if the folder is already there.
     os.makedirs(app.instance_path, exist_ok=True)
 
-    # Register the database functions and the init-db command
+    # Import our db.py file (the "." means "from this same package")
     from . import db
 
+    # Connect the database functions and the "init-db" terminal command to the app
     db.init_app(app)
 
-    # Temporary test route - replaced by the dashboard in a later step
+    # Temporary test route - replaced by the dashboard in a later step.
+    # @app.route("/") connects the home page URL to the function below it.
     @app.route("/")
     def index():
+        # Whatever the function returns is what the browser shows
         return "Student Operations Hub is running!!"
 
+    # Hand the finished app back to Flask so it can run it
     return app
