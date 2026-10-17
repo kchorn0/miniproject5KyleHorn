@@ -27,6 +27,11 @@ def create_app(test_config=None):
     # Make sure the instance folder exists so the database can be created there
     os.makedirs(app.instance_path, exist_ok=True)
 
+    # Register the database functions and the init-db command
+    from . import db
+
+    db.init_app(app)
+
     # Temporary test route - replaced by the dashboard in a later step
     @app.route("/")
     def index():
