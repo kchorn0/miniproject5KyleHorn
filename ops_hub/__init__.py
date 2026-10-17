@@ -10,6 +10,12 @@ import os
 # Flask is the class that creates our web application
 from flask import Flask
 
+# flash stores a one-time message to show on the next page (displayed by base.html)
+from flask import flash
+
+# render_template turns an HTML template in the templates/ folder into a finished page
+from flask import render_template
+
 
 # Application factory: Flask looks for a function named create_app() to build the app.
 # test_config lets us pass in different settings (for example, a test database).
@@ -51,8 +57,10 @@ def create_app(test_config=None):
     # @app.route("/") connects the home page URL to the function below it.
     @app.route("/")
     def index():
-        # Whatever the function returns is what the browser shows
-        return "Student Operations Hub is running!!"
+        # Temporary test message to check that flash alerts show up in green ("success")
+        flash("Bootstrap layout is working!", "success")
+        # Build home.html (which extends base.html) and send it to the browser
+        return render_template("home.html")
 
     # Hand the finished app back to Flask so it can run it
     return app

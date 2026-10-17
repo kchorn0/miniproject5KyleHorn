@@ -1,0 +1,20 @@
+{# home.html - TEMPORARY page to test base.html. The Dashboard replaces it in a later step. #}
+
+{# Use base.html as the layout; this file only fills in its blocks #}
+{% extends 'base.html' %}
+
+{# Fill the header block with a heading. The title block is nested inside it,
+   so "Home" shows both on the page and in the browser tab. #}
+{% block header %}
+  <h1>{% block title %}Home{% endblock %}</h1>
+{% endblock %}
+
+{# Fill the content block with a Bootstrap card (a white box with a border and padding) #}
+{% block content %}
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Layout test</h5>
+      <p class="card-text">If this page has a dark navbar and a green message above, Bootstrap is working.</p>
+    </div>
+  </div>
+{% endblock %}

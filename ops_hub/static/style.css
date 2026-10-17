@@ -1,0 +1,7 @@
+/* style.css - small custom tweaks on top of Bootstrap. */
+/* Most styling comes from Bootstrap classes in the HTML, so this file stays short. */
+
+/* Light gray page background so white cards and tables stand out */
+body {
+  background-color: #f5f6f8;
+}
