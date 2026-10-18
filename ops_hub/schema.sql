@@ -3,8 +3,7 @@
 -- In SQL, two dashes (--) start a comment, like # in Python.
 
 -- Delete the old tables (if they exist) so we start fresh.
--- Child tables are dropped first because they point to the students table.
-DROP TABLE IF EXISTS schedules;
+-- projects is dropped before students because it points to the students table.
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS systems;
 DROP TABLE IF EXISTS students;
@@ -43,19 +42,6 @@ CREATE TABLE projects (
   -- Foreign key: student_id must match an id in the students table.
   -- ON DELETE SET NULL: if that student is deleted, this project stays but becomes Unassigned.
   FOREIGN KEY (student_id) REFERENCES students (id) ON DELETE SET NULL
-);
-
--- Work shifts for student employees
-CREATE TABLE schedules (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,  -- unique number for each shift
-  student_id INTEGER NOT NULL,           -- required: every shift belongs to a student
-  shift_date TEXT NOT NULL,              -- date as text, like '2026-10-19'
-  start_time TEXT NOT NULL,              -- time as text, like '09:00' (24-hour clock)
-  end_time TEXT NOT NULL,                -- time as text, like '13:30'
-  notes TEXT,                            -- optional
-  -- Foreign key: student_id must match an id in the students table.
-  -- ON DELETE CASCADE: if that student is deleted, their shifts are deleted too.
-  FOREIGN KEY (student_id) REFERENCES students (id) ON DELETE CASCADE
 );
 
 -- Workplace systems whose status the manager updates by hand (no foreign key needed)

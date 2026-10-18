@@ -80,13 +80,10 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
-        {# Middle: explain what will happen (the foreign key rules from schema.sql) #}
+        {# Middle: explain what will happen (the foreign key rule from schema.sql) #}
         <div class="modal-body">
           <p>This permanently deletes this student employee.</p>
-          <ul class="mb-0">
-            <li>Their scheduled shifts will also be deleted.</li>
-            <li>Their projects will stay but become <strong>Unassigned</strong>.</li>
-          </ul>
+          <p class="mb-0">Their projects will stay but become <strong>Unassigned</strong>.</p>
         </div>
 
         {# Bottom: Cancel closes the pop-up; the red button really deletes #}

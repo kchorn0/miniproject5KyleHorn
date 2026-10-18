@@ -160,8 +160,8 @@ def update(id):
 def delete(id):
     """Delete a student employee.
 
-    Because of the foreign keys in schema.sql, their shifts are deleted too
-    and their projects become Unassigned.
+    Because of the foreign key in schema.sql (ON DELETE SET NULL),
+    their projects stay but become Unassigned.
     """
     # Make sure the student exists (404 if not) and get their name for the message
     student = get_student(id)
