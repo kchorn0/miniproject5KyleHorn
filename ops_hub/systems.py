@@ -36,10 +36,10 @@ from .db import get_db
 bp = Blueprint("systems", __name__, url_prefix="/systems")
 
 # Allowed status values (they match the CHECK rule in schema.sql)
-STATUSES = ["Operational", "Degraded", "Outage"]
+STATUSES = ["Operational", "Getting Updates", "Outage"]
 
 # Bootstrap color for each status: green, yellow, red
-STATUS_COLORS = {"Operational": "success", "Degraded": "warning", "Outage": "danger"}
+STATUS_COLORS = {"Operational": "success", "Getting Updates": "warning", "Outage": "danger"}
 
 
 def get_system(id):

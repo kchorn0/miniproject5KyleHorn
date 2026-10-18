@@ -51,7 +51,7 @@ CREATE TABLE systems (
   id INTEGER PRIMARY KEY AUTOINCREMENT,  -- unique number for each system
   name TEXT UNIQUE NOT NULL,             -- required, and no duplicate system names
   status TEXT NOT NULL DEFAULT 'Operational'  -- defaults to Operational
-    CHECK (status IN ('Operational', 'Degraded', 'Outage')),  -- allowed statuses
+    CHECK (status IN ('Operational', 'Getting Updates', 'Outage')),  -- allowed statuses
   notes TEXT,                            -- short description or current issue
   -- when the status was last updated, in local time (same idea as projects.created)
   last_updated TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime'))
