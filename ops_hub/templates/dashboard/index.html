@@ -1,0 +1,120 @@
+{# dashboard/index.html - home page with summary numbers, upcoming deadlines, and system statuses #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Dashboard{% endblock %}</h1>
+  {# Greet the logged-in user; text-muted = gray text #}
+  <p class="text-muted mb-0">Welcome back, {{ g.user['username'] }}.</p>
+{% endblock %}
+
+{% block content %}
+
+  {# ===== Row 1: four summary cards =====
+     row-cols-2 = 2 cards per row on phones, row-cols-md-4 = 4 per row on bigger screens. g-3 = gap. #}
+  <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+
+    {# Card 1: active students #}
+    <div class="col">
+      {# h-100 makes all four cards the same height #}
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="text-muted small">Active Students</div>
+          {# display-6 = large number; the value comes from dashboard.py #}
+          <div class="display-6">{{ active_students }}</div>
+          {# Link to the full page #}
+          <a href="{{ url_for('students.index') }}" class="small">View students</a>
+        </div>
+      </div>
+    </div>
+
+    {# Card 2: projects that aren't finished #}
+    <div class="col">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="text-muted small">Open Projects</div>
+          <div class="display-6">{{ open_projects }}</div>
+          <a href="{{ url_for('projects.index') }}" class="small">View projects</a>
+        </div>
+      </div>
+    </div>
+
+    {# Card 3: overdue projects. The number turns red if there are any. #}
+    <div class="col">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="text-muted small">Overdue Projects</div>
+          <div class="display-6 {% if overdue_projects > 0 %}text-danger{% endif %}">{{ overdue_projects }}</div>
+          <a href="{{ url_for('projects.index') }}" class="small">View projects</a>
+        </div>
+      </div>
+    </div>
+
+    {# Card 4: systems. Shows "All OK" in green, or the number of problems in red. #}
+    <div class="col">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <div class="text-muted small">System Issues</div>
+          {% if system_problems == 0 %}
+            <div class="display-6 text-success">All OK</div>
+          {% else %}
+            <div class="display-6 text-danger">{{ system_problems }}</div>
+          {% endif %}
+          <a href="{{ url_for('systems.index') }}" class="small">View systems</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {# ===== Row 2: two side-by-side lists (stacked on phones) ===== #}
+  <div class="row g-3">
+
+    {# Left (wider): upcoming deadlines. col-lg-7 = 7 of 12 columns on large screens. #}
+    <div class="col-lg-7">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-semibold">Upcoming Deadlines</div>
+        {# list-group-flush = list with no outer border, so it sits neatly inside the card #}
+        <ul class="list-group list-group-flush">
+          {# Loop over the next 5 projects sent from dashboard.py #}
+          {% for project in upcoming %}
+            {# d-flex + justify-content-between = project info on the left, date on the right #}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <div class="fw-semibold">{{ project['title'] }}</div>
+                {# Student's name, or Unassigned if there isn't one #}
+                <div class="small text-muted">{{ project['student_name'] or 'Unassigned' }}</div>
+              </div>
+              <div class="text-end">
+                {# Priority badge colored with the same colors as the Projects page #}
+                <span class="badge text-bg-{{ priority_colors[project['priority']] }}">{{ project['priority'] }}</span>
+                <div class="small">{{ project['due_date'] }}</div>
+              </div>
+            </li>
+          {# {% else %} inside a for loop runs when the list is empty #}
+          {% else %}
+            <li class="list-group-item text-muted">No upcoming deadlines.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    {# Right (narrower): every system with its status badge #}
+    <div class="col-lg-5">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-semibold">System Status</div>
+        <ul class="list-group list-group-flush">
+          {% for system in systems %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ system['name'] }}
+              {# Same green / yellow / red colors as the Systems page #}
+              <span class="badge text-bg-{{ system_colors[system['status']] }}">{{ system['status'] }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

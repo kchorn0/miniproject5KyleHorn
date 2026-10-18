@@ -10,9 +10,6 @@ import os
 # Flask is the class that creates our web application
 from flask import Flask
 
-# render_template turns an HTML template in the templates/ folder into a finished page
-from flask import render_template
-
 
 # Application factory: Flask looks for a function named create_app() to build the app.
 # test_config lets us pass in different settings (for example, a test database).
@@ -50,9 +47,8 @@ def create_app(test_config=None):
     # Connect the database functions and the "init-db" terminal command to the app
     db.init_app(app)
 
-    # Import auth.py (register/login/logout) and login_required to protect pages
+    # Import auth.py (register, login, logout)
     from . import auth
-    from .auth import login_required
 
     # Register the auth blueprint so its /auth/... routes become part of the app
     app.register_blueprint(auth.bp)
@@ -72,14 +68,14 @@ def create_app(test_config=None):
 
     app.register_blueprint(systems.bp)
 
-    # Temporary test route - replaced by the dashboard in a later step.
-    # @app.route("/") connects the home page URL to the function below it.
-    @app.route("/")
-    # Only logged-in users can see this page; others are sent to the login page
-    @login_required
-    def index():
-        # Build home.html (which extends base.html) and send it to the browser
-        return render_template("home.html")
+    # Import and register the dashboard (the home page at "/")
+    from . import dashboard
+
+    app.register_blueprint(dashboard.bp)
+
+    # Let url_for("index") mean the dashboard, so links like the navbar
+    # brand and the redirect after login go to the home page
+    app.add_url_rule("/", endpoint="index")
 
     # Hand the finished app back to Flask so it can run it
     return app

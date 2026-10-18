@@ -52,7 +52,7 @@
            gets the "active" class so it shows brighter (tells you which page you're on). #}
         <ul class="navbar-nav me-auto">
           {% if g.user %}
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.blueprint == 'dashboard' %}active{% endif %}" href="{{ url_for('index') }}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link {% if request.blueprint == 'students' %}active{% endif %}" href="{{ url_for('students.index') }}">Students</a></li>
             <li class="nav-item"><a class="nav-link {% if request.blueprint == 'projects' %}active{% endif %}" href="{{ url_for('projects.index') }}">Projects</a></li>
             <li class="nav-item"><a class="nav-link {% if request.blueprint == 'systems' %}active{% endif %}" href="{{ url_for('systems.index') }}">Systems</a></li>
