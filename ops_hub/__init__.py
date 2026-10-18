@@ -67,6 +67,11 @@ def create_app(test_config=None):
 
     app.register_blueprint(projects.bp)
 
+    # Import and register the system status pages (/systems/...)
+    from . import systems
+
+    app.register_blueprint(systems.bp)
+
     # Temporary test route - replaced by the dashboard in a later step.
     # @app.route("/") connects the home page URL to the function below it.
     @app.route("/")

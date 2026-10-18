@@ -38,7 +38,9 @@ CREATE TABLE projects (
   due_date TEXT,                         -- saved as text like '2026-10-19' so dates sort correctly
   status TEXT NOT NULL DEFAULT 'Not Started'  -- defaults to Not Started
     CHECK (status IN ('Not Started', 'In Progress', 'Blocked', 'Completed')),  -- allowed statuses
-  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- date/time the project was added (automatic)
+  -- date/time the project was added (automatic). datetime('now', 'localtime') uses your
+  -- computer's local time; plain CURRENT_TIMESTAMP would save UTC (5-6 hours ahead of Central).
+  created TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
   -- Foreign key: student_id must match an id in the students table.
   -- ON DELETE SET NULL: if that student is deleted, this project stays but becomes Unassigned.
   FOREIGN KEY (student_id) REFERENCES students (id) ON DELETE SET NULL
@@ -51,13 +53,15 @@ CREATE TABLE systems (
   status TEXT NOT NULL DEFAULT 'Operational'  -- defaults to Operational
     CHECK (status IN ('Operational', 'Degraded', 'Outage')),  -- allowed statuses
   notes TEXT,                            -- short description or current issue
-  last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  -- when the status last changed
+  -- when the status was last updated, in local time (same idea as projects.created)
+  last_updated TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime'))
 );
 
 -- Starting systems so the System Status page is not empty.
--- status and last_updated are left out, so they use their DEFAULT values.
+-- status and last_updated are left out, so they use their DEFAULT values (Operational, now).
 INSERT INTO systems (name, notes) VALUES
-  ('Blackboard', 'Learning management system'),
+  ('Blackboard', 'Learning management system for courses'),
   ('Zoom', 'Video meetings and virtual classes'),
-  ('Microsoft 365', 'Email, Teams, and Office apps'),
-  ('Campus Wi-Fi', 'Wireless network');
+  ('TigernetID/CAS', 'Campus single sign-on login'),
+  ('Workday', 'HR, payroll, and timesheets'),
+  ('Panopto', 'Lecture recording and video hosting');

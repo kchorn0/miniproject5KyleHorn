@@ -1,0 +1,55 @@
+{# systems/index.html - status board showing every workplace system #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}System Status{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {# Summary banner: green if everything is fine, yellow if any system has a problem.
+     problems is the count sent from systems.py. #}
+  {% if problems == 0 %}
+    <div class="alert alert-success">All systems operational.</div>
+  {% else %}
+    {# Correct grammar for the number: "1 system needs" vs "2 systems need" #}
+    <div class="alert alert-warning">
+      {{ problems }} {{ 'system needs' if problems == 1 else 'systems need' }} attention.
+    </div>
+  {% endif %}
+
+  {# Bootstrap grid: row of cards. g-3 = gap between cards.
+     row-cols-1 = 1 card per row on phones, row-cols-md-2 = 2 on tablets, row-cols-lg-3 = 3 on laptops. #}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    {# One card per system #}
+    {% for system in systems %}
+      {# Look up this system's color once: success (green), warning (yellow), or danger (red) #}
+      {% set color = status_colors[system['status']] %}
+      <div class="col">
+        {# border-2 border-{{ color }} = a thicker outline in the status color (green, yellow, or red).
+           h-100 = every card in a row is the same height. #}
+        <div class="card shadow-sm h-100 border-2 border-{{ color }}">
+          <div class="card-body">
+            {# System name on the left, status badge on the right #}
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title mb-0">{{ system['name'] }}</h5>
+              <span class="badge text-bg-{{ color }}">{{ system['status'] }}</span>
+            </div>
+            {# Notes, or a dash if there are none #}
+            <p class="card-text">{{ system['notes'] or '—' }}</p>
+          </div>
+          {# Card footer: when it was last updated, and the Update button #}
+          <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+            {# last_updated is a Python datetime (thanks to the converter in db.py).
+               strftime formats it, for example "Oct 17, 2026 2:42 PM".
+               %b = short month, %d = day, %Y = year, %I:%M = hour:minute, %p = AM/PM #}
+            <small class="text-muted">Updated {{ system['last_updated'].strftime('%b %d, %Y %I:%M %p') }}</small>
+            <a class="btn btn-sm btn-outline-primary"
+               href="{{ url_for('systems.update', id=system['id']) }}">Update</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

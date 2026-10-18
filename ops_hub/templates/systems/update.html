@@ -1,0 +1,47 @@
+{# systems/update.html - form for changing one system's status and notes #}
+
+{# Use the shared layout from base.html #}
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Update {{ system['name'] }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        {# Show the current status so the user knows what they're changing from #}
+        <p>
+          Current status:
+          <span class="badge text-bg-{{ status_colors[system['status']] }}">{{ system['status'] }}</span>
+        </p>
+
+        {# Sends a POST request to this same URL (/systems/<id>/update) #}
+        <form method="post">
+
+          <div class="mb-3">
+            <label for="status" class="form-label">New Status</label>
+            <select name="status" id="status" class="form-select">
+              {# Pre-select what was submitted (if there was an error), otherwise the current status #}
+              {% for status in statuses %}
+                <option {% if status == request.form.get('status', system['status']) %}selected{% endif %}>{{ status }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="notes" class="form-label">Notes</label>
+            {# Describe the system, or explain the current issue (for example, "Slow logins since 9 AM") #}
+            <textarea name="notes" id="notes" class="form-control" rows="3">{{ request.form.get('notes', system['notes'] or '') }}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save Status</button>
+          <a class="btn btn-outline-secondary" href="{{ url_for('systems.index') }}">Cancel</a>
+        </form>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
