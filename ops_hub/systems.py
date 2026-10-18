@@ -42,6 +42,7 @@ STATUSES = ["Operational", "Getting Updates", "Outage"]
 STATUS_COLORS = {"Operational": "success", "Getting Updates": "warning", "Outage": "danger"}
 
 
+# Helper used by the update route to load one system
 def get_system(id):
     """Get one system by id, or show a 404 page if it doesn't exist."""
     system = get_db().execute("SELECT * FROM systems WHERE id = ?", (id,)).fetchone()
@@ -50,6 +51,7 @@ def get_system(id):
     if system is None:
         abort(404, f"System id {id} doesn't exist.")
 
+    # Give back the system's row
     return system
 
 
@@ -65,6 +67,7 @@ def index():
     # This is a "generator expression": it adds 1 for each system with a problem.
     problems = sum(1 for system in systems if system["status"] != "Operational")
 
+    # Send the systems, problem count, and colors to the template
     return render_template(
         "systems/index.html",
         systems=systems,
@@ -99,8 +102,11 @@ def update(id):
                 " WHERE id = ?",
                 (status, notes, id),
             )
+            # Save the change to the database file
             db.commit()
+            # Green success message
             flash(f"{system['name']} status set to {status}.", "success")
+            # Go back to the status board
             return redirect(url_for("systems.index"))
 
     # GET (or a failed POST): show the form filled in with the current status

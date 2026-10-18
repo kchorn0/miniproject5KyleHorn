@@ -52,6 +52,7 @@ STATUS_COLORS = {
 }
 
 
+# Helper used by the edit and delete routes to load one project
 def get_project(id):
     """Get one project (with its student's name), or show a 404 page if it doesn't exist."""
     # LEFT JOIN adds the student's name from the students table.
@@ -64,6 +65,7 @@ def get_project(id):
             " WHERE p.id = ?",
             (id,),
         )
+        # fetchone() returns the one matching row (or None)
         .fetchone()
     )
 
@@ -75,11 +77,13 @@ def get_project(id):
     return project
 
 
+# Helper that loads the students for the dropdown menu
 def get_student_choices():
     """Get every student (id, name, status) for the "Assigned To" dropdown."""
     return get_db().execute("SELECT id, name, status FROM students ORDER BY name").fetchall()
 
 
+# Helper used by the add and edit routes to read and check the form
 def read_project_form():
     """Read the project fields from the submitted form and check them.
 
@@ -136,6 +140,7 @@ def read_project_form():
         "due_date": due_date,
         "status": status,
     }
+    # Send back the values and the error (None if valid)
     return values, error
 
 
@@ -189,7 +194,9 @@ def create():
                 values,
             )
             db.commit()
+            # Green success message
             flash(f"Project \"{values['title']}\" added.", "success")
+            # Go back to the project list
             return redirect(url_for("projects.index"))
 
     # GET (or a failed POST): show the form with the dropdown choices
@@ -214,6 +221,7 @@ def update(id):
         # Read and check the form fields
         values, error = read_project_form()
 
+        # Something was wrong: show a red message and the form again
         if error is not None:
             flash(error, "danger")
         else:
@@ -227,8 +235,11 @@ def update(id):
                 " WHERE id = :id",
                 values,
             )
+            # Save the change to the database file
             db.commit()
+            # Green success message
             flash(f"Project \"{values['title']}\" updated.", "success")
+            # Go back to the project list
             return redirect(url_for("projects.index"))
 
     # GET (or a failed POST): show the form filled in with the project's current info

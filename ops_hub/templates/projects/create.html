@@ -3,31 +3,44 @@
 {# Use the shared layout from base.html #}
 {% extends 'base.html' %}
 
+{# Heading area: fills the header block in base.html #}
 {% block header %}
+  {# Page heading; the nested title block also sets the browser tab title #}
   <h1>{% block title %}Add Project{% endblock %}</h1>
 {% endblock %}
 
+{# Main content: fills the content block in base.html #}
 {% block content %}
+  {# Keeps the form from getting too wide on large screens (8 of 12 columns) #}
   <div class="col-lg-8">
+    {# card = white box with a border; shadow-sm = light shadow #}
     <div class="card shadow-sm">
+      {# card-body adds padding inside the card #}
       <div class="card-body">
 
         {# Sends a POST request to this same URL (/projects/create) #}
         <form method="post">
 
+          {# mb-3 = space below this form field #}
           <div class="mb-3">
+            {# Label shown above the title field #}
             <label for="title" class="form-label">Title</label>
             {# Refill what was typed if the form had an error; empty on first visit #}
             <input name="title" id="title" class="form-control"
                    value="{{ request.form.get('title', '') }}" required>
           </div>
 
+          {# mb-3 = space below this form field #}
           <div class="mb-3">
+            {# Label shown above the description field #}
             <label for="description" class="form-label">Description</label>
+            {# Multi-line text box; shows the typed or saved text #}
             <textarea name="description" id="description" class="form-control" rows="3">{{ request.form.get('description', '') }}</textarea>
           </div>
 
+          {# mb-3 = space below this form field #}
           <div class="mb-3">
+            {# Label shown above the student_id field #}
             <label for="student_id" class="form-label">Assigned To</label>
             {# Dropdown of students. Each option's value is the student's id (what gets saved);
                the text between the tags is the name the user sees. #}
@@ -46,8 +59,11 @@
 
           {# row + col-md-4 puts these three fields side by side on medium and larger screens #}
           <div class="row">
+            {# One of three side-by-side fields on medium and larger screens #}
             <div class="col-md-4 mb-3">
+              {# Label shown above the priority field #}
               <label for="priority" class="form-label">Priority</label>
+              {# Dropdown menu for priority #}
               <select name="priority" id="priority" class="form-select">
                 {# Default to Medium on first visit #}
                 {% for priority in priorities %}
@@ -56,15 +72,20 @@
               </select>
             </div>
 
+            {# One of three side-by-side fields on medium and larger screens #}
             <div class="col-md-4 mb-3">
+              {# Label shown above the due_date field #}
               <label for="due_date" class="form-label">Due Date</label>
               {# type="date" shows a calendar picker and always sends the date as YYYY-MM-DD #}
               <input type="date" name="due_date" id="due_date" class="form-control"
                      value="{{ request.form.get('due_date', '') }}">
             </div>
 
+            {# One of three side-by-side fields on medium and larger screens #}
             <div class="col-md-4 mb-3">
+              {# Label shown above the status field #}
               <label for="status" class="form-label">Status</label>
+              {# Dropdown menu for status #}
               <select name="status" id="status" class="form-select">
                 {# Default to Not Started on first visit #}
                 {% for status in statuses %}
@@ -74,7 +95,9 @@
             </div>
           </div>
 
+          {# Submit button: sends the form to Flask as a POST request #}
           <button type="submit" class="btn btn-primary">Save</button>
+          {# Cancel: a link back to the list that saves nothing #}
           <a class="btn btn-outline-secondary" href="{{ url_for('projects.index') }}">Cancel</a>
         </form>
 

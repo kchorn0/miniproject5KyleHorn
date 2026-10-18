@@ -11,6 +11,9 @@
   {# Browser tab title. Each page fills in the title block; " - Student Operations Hub" is added to all of them. #}
   <title>{% block title %}{% endblock %} - Student Operations Hub</title>
 
+  {# Empty tab icon so the browser doesn't request /favicon.ico (avoids a 404 in the terminal) #}
+  <link rel="icon" href="data:,">
+
   {# Bootstrap CSS from a CDN (a public server), so we don't have to install anything.
      integrity is a fingerprint of the file - the browser refuses it if it was tampered with. #}
   <link rel="stylesheet"

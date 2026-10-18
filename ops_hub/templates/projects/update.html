@@ -3,13 +3,19 @@
 {# Use the shared layout from base.html #}
 {% extends 'base.html' %}
 
+{# Heading area: fills the header block in base.html #}
 {% block header %}
+  {# Page heading; the nested title block also sets the browser tab title #}
   <h1>{% block title %}Edit Project{% endblock %}</h1>
 {% endblock %}
 
+{# Main content: fills the content block in base.html #}
 {% block content %}
+  {# Keeps the form from getting too wide on large screens (8 of 12 columns) #}
   <div class="col-lg-8">
+    {# card = white box with a border; shadow-sm = light shadow #}
     <div class="card shadow-sm">
+      {# card-body adds padding inside the card #}
       <div class="card-body">
 
         {# Sends a POST request to this same URL (/projects/<id>/update) #}
@@ -18,23 +24,31 @@
           {# Each field shows what was just typed (if there was an error), otherwise the saved value.
              "or ''" turns an empty (None) value into blank text. #}
           <div class="mb-3">
+            {# Label shown above the title field #}
             <label for="title" class="form-label">Title</label>
             <input name="title" id="title" class="form-control"
                    value="{{ request.form.get('title', project['title']) }}" required>
           </div>
 
+          {# mb-3 = space below this form field #}
           <div class="mb-3">
+            {# Label shown above the description field #}
             <label for="description" class="form-label">Description</label>
+            {# Multi-line text box; shows the typed or saved text #}
             <textarea name="description" id="description" class="form-control" rows="3">{{ request.form.get('description', project['description'] or '') }}</textarea>
           </div>
 
           {# The currently assigned student's id as text ("" if Unassigned), used to pre-select the dropdown #}
           {% set current_student = request.form.get('student_id', (project['student_id'] or '')|string) %}
+          {# mb-3 = space below this form field #}
           <div class="mb-3">
+            {# Label shown above the student_id field #}
             <label for="student_id" class="form-label">Assigned To</label>
+            {# Dropdown menu for student_id #}
             <select name="student_id" id="student_id" class="form-select">
               <option value="">Unassigned</option>
               {% for student in students %}
+                {# One option per student; the id is what gets saved #}
                 <option value="{{ student['id'] }}"
                         {% if student['id']|string == current_student %}selected{% endif %}>
                   {{ student['name'] }}{% if student['status'] == 'Inactive' %} (Inactive){% endif %}
@@ -43,26 +57,37 @@
             </select>
           </div>
 
+          {# row lets the fields below sit side by side #}
           <div class="row">
+            {# One of three side-by-side fields on medium and larger screens #}
             <div class="col-md-4 mb-3">
+              {# Label shown above the priority field #}
               <label for="priority" class="form-label">Priority</label>
+              {# Dropdown menu for priority #}
               <select name="priority" id="priority" class="form-select">
+                {# One option per allowed value; the current one is pre-selected #}
                 {% for priority in priorities %}
                   <option {% if priority == request.form.get('priority', project['priority']) %}selected{% endif %}>{{ priority }}</option>
                 {% endfor %}
               </select>
             </div>
 
+            {# One of three side-by-side fields on medium and larger screens #}
             <div class="col-md-4 mb-3">
+              {# Label shown above the due_date field #}
               <label for="due_date" class="form-label">Due Date</label>
+              {# Calendar date picker; always sends the date as YYYY-MM-DD #}
               <input type="date" name="due_date" id="due_date" class="form-control"
                      value="{{ request.form.get('due_date', project['due_date'] or '') }}">
             </div>
 
+            {# One of three side-by-side fields on medium and larger screens #}
             <div class="col-md-4 mb-3">
               {# Change the status here to update progress (for example, In Progress -> Completed) #}
               <label for="status" class="form-label">Status</label>
+              {# Dropdown menu for status #}
               <select name="status" id="status" class="form-select">
+                {# One option per allowed value; the current one is pre-selected #}
                 {% for status in statuses %}
                   <option {% if status == request.form.get('status', project['status']) %}selected{% endif %}>{{ status }}</option>
                 {% endfor %}
@@ -70,7 +95,9 @@
             </div>
           </div>
 
+          {# Submit button: sends the form to Flask as a POST request #}
           <button type="submit" class="btn btn-primary">Save Changes</button>
+          {# Cancel: a link back to the list that saves nothing #}
           <a class="btn btn-outline-secondary" href="{{ url_for('projects.index') }}">Cancel</a>
 
           {# Opens the confirmation modal below (does not delete by itself) #}
@@ -90,6 +117,7 @@
           <h5 class="modal-title" id="deleteModalLabel">Delete this project?</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        {# Middle of the pop-up: explains what will be deleted #}
         <div class="modal-body">
           {# Show which project will be deleted #}
           <p class="mb-0">"<strong>{{ project['title'] }}</strong>" will be permanently deleted.</p>

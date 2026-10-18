@@ -3,12 +3,15 @@
 {# Use the shared layout from base.html #}
 {% extends 'base.html' %}
 
+{# Heading area: fills the header block in base.html #}
 {% block header %}
+  {# Page heading; the nested title block also sets the browser tab title #}
   <h1>{% block title %}Dashboard{% endblock %}</h1>
   {# Greet the logged-in user; text-muted = gray text #}
   <p class="text-muted mb-0">Welcome back, {{ g.user['username'] }}.</p>
 {% endblock %}
 
+{# Main content: fills the content block in base.html #}
 {% block content %}
 
   {# ===== Row 1: four summary cards =====
@@ -19,6 +22,7 @@
     <div class="col">
       {# h-100 makes all four cards the same height #}
       <div class="card shadow-sm h-100">
+        {# card-body adds padding inside the card #}
         <div class="card-body">
           <div class="text-muted small">Active Students</div>
           {# display-6 = large number; the value comes from dashboard.py #}
@@ -32,6 +36,7 @@
     {# Card 2: projects that aren't finished #}
     <div class="col">
       <div class="card shadow-sm h-100">
+        {# card-body adds padding inside the card #}
         <div class="card-body">
           <div class="text-muted small">Open Projects</div>
           <div class="display-6">{{ open_projects }}</div>
@@ -43,6 +48,7 @@
     {# Card 3: overdue projects. The number turns red if there are any. #}
     <div class="col">
       <div class="card shadow-sm h-100">
+        {# card-body adds padding inside the card #}
         <div class="card-body">
           <div class="text-muted small">Overdue Projects</div>
           <div class="display-6 {% if overdue_projects > 0 %}text-danger{% endif %}">{{ overdue_projects }}</div>
@@ -54,13 +60,16 @@
     {# Card 4: systems. Shows "All OK" in green, or the number of problems in red. #}
     <div class="col">
       <div class="card shadow-sm h-100">
+        {# card-body adds padding inside the card #}
         <div class="card-body">
           <div class="text-muted small">System Issues</div>
           {% if system_problems == 0 %}
             <div class="display-6 text-success">All OK</div>
           {% else %}
+            {# Number of systems with a problem, in red #}
             <div class="display-6 text-danger">{{ system_problems }}</div>
           {% endif %}
+          {# Link to the full System Status page #}
           <a href="{{ url_for('systems.index') }}" class="small">View systems</a>
         </div>
       </div>
@@ -107,6 +116,7 @@
         <ul class="list-group list-group-flush">
           {% for system in systems %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
+              {# System name on the left #}
               {{ system['name'] }}
               {# Same green / yellow / red colors as the Systems page #}
               <span class="badge text-bg-{{ system_colors[system['status']] }}">{{ system['status'] }}</span>

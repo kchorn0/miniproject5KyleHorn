@@ -56,21 +56,25 @@ def create_app(test_config=None):
     # Import and register the student employee pages (/students/...)
     from . import students
 
+    # Add the students routes to the app
     app.register_blueprint(students.bp)
 
     # Import and register the projects and assignments pages (/projects/...)
     from . import projects
 
+    # Add the projects routes to the app
     app.register_blueprint(projects.bp)
 
     # Import and register the system status pages (/systems/...)
     from . import systems
 
+    # Add the systems routes to the app
     app.register_blueprint(systems.bp)
 
     # Import and register the dashboard (the home page at "/")
     from . import dashboard
 
+    # Add the dashboard route to the app
     app.register_blueprint(dashboard.bp)
 
     # Let url_for("index") mean the dashboard, so links like the navbar

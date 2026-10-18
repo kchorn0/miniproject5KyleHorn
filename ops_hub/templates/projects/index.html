@@ -3,22 +3,31 @@
 {# Use the shared layout from base.html #}
 {% extends 'base.html' %}
 
+{# Heading area: fills the header block in base.html #}
 {% block header %}
   {# Heading on the left, Add button on the right #}
   <div class="d-flex justify-content-between align-items-center">
+    {# Page heading; the nested title block also sets the browser tab title #}
     <h1>{% block title %}Projects &amp; Assignments{% endblock %}</h1>
+    {# Link styled as a blue button that opens the Add Project form #}
     <a class="btn btn-primary" href="{{ url_for('projects.create') }}">Add Project</a>
   </div>
 {% endblock %}
 
+{# Main content: fills the content block in base.html #}
 {% block content %}
+  {# card = white box with a border; shadow-sm = light shadow #}
   <div class="card shadow-sm">
+    {# card-body adds padding inside the card #}
     <div class="card-body">
 
       {# Only build the table if there is at least one project #}
       {% if projects %}
+        {# table-responsive lets the table scroll sideways on small screens #}
         <div class="table-responsive">
+          {# table-hover highlights the row under the mouse; align-middle centers text vertically #}
           <table class="table table-hover align-middle mb-0">
+            {# thead = the header row with the column titles #}
             <thead>
               <tr>
                 <th>Project</th>
@@ -62,8 +71,11 @@
                       {{ project['due_date'] or '—' }}
                     {% endif %}
                   </td>
+                  {# Status badge colored by status_colors from projects.py #}
                   <td><span class="badge text-bg-{{ status_colors[project['status']] }}">{{ project['status'] }}</span></td>
+                  {# Right-aligned cell that holds the Edit button #}
                   <td class="text-end">
+                    {# url_for fills in this project's id, for example /projects/3/update #}
                     <a class="btn btn-sm btn-outline-primary"
                        href="{{ url_for('projects.update', id=project['id']) }}">Edit</a>
                   </td>

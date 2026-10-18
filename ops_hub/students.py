@@ -39,6 +39,7 @@ bp = Blueprint("students", __name__, url_prefix="/students")
 STATUSES = ["Active", "Inactive"]
 
 
+# Helper used by the edit and delete routes to load one student
 def get_student(id):
     """Get one student by id, or show a 404 page if it doesn't exist."""
     # Look up the student with this id
@@ -52,6 +53,7 @@ def get_student(id):
     return student
 
 
+# Helper used by the add and edit routes to read and check the form
 def read_student_form():
     """Read the student fields from the submitted form and check them.
 
@@ -147,7 +149,9 @@ def update(id):
                 (name, email, role, status, notes, id),
             )
             db.commit()
+            # Green success message
             flash(f"Student {name} updated.", "success")
+            # Go back to the student list
             return redirect(url_for("students.index"))
 
     # GET (or a failed POST): show the form filled in with the student's current info

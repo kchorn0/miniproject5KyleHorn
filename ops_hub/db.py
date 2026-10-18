@@ -20,6 +20,7 @@ from flask import current_app
 from flask import g
 
 
+# Open (or reuse) the database connection for this request
 def get_db():
     """Return the database connection for the current request.
 
@@ -54,6 +55,7 @@ def close_db(e=None):
         db.close()
 
 
+# Build the tables by running schema.sql
 def init_db():
     """Delete any existing data and create fresh tables from schema.sql."""
     # Get a connection to the database
@@ -80,6 +82,7 @@ def init_db_command():
 sqlite3.register_converter("timestamp", lambda v: datetime.fromisoformat(v.decode()))
 
 
+# Called from create_app() in __init__.py to hook the database into the app
 def init_app(app):
     """Connect the database functions to the Flask app."""
     # After every request finishes, run close_db() automatically

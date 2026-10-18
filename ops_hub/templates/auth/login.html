@@ -3,31 +3,40 @@
 {# Use the shared layout from base.html #}
 {% extends 'base.html' %}
 
-{# Page heading; the nested title block also sets the browser tab title #}
+{# Heading area: fills the header block in base.html #}
 {% block header %}
+  {# Page heading; the nested title block also sets the browser tab title #}
   <h1>{% block title %}Log In{% endblock %}</h1>
 {% endblock %}
 
+{# Main content: fills the content block in base.html #}
 {% block content %}
   {# Center a narrow column on the page #}
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-4">
+      {# card = white box with a border; shadow-sm = light shadow #}
       <div class="card shadow-sm">
+        {# card-body adds padding inside the card #}
         <div class="card-body">
 
           {# Sends a POST request to this same URL (/auth/login) #}
           <form method="post">
+            {# mb-3 = space below this form field #}
             <div class="mb-3">
+              {# Label shown above the username field #}
               <label for="username" class="form-label">Username</label>
               {# value keeps the typed username if the login fails #}
               <input name="username" id="username" class="form-control"
                      value="{{ request.form['username'] }}" required>
             </div>
+            {# mb-3 = space below this form field #}
             <div class="mb-3">
+              {# Label shown above the password field #}
               <label for="password" class="form-label">Password</label>
               {# Password is never refilled, for security #}
               <input type="password" name="password" id="password" class="form-control" required>
             </div>
+            {# Submit button: sends the form to Flask as a POST request #}
             <button type="submit" class="btn btn-primary w-100">Log In</button>
           </form>
 

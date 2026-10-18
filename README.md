@@ -80,7 +80,7 @@ miniproject5KyleHorn/
 
 ### Dependencies
 
-- Python 3.8 or newer (developed and tested on Python 3.14.7)
+- Python 3.10 or newer (developed and tested on Python 3.14.7)
 - pip (comes with Python)
 - Flask 3.1 and its helper packages, installed from `requirements.txt` below
 - An internet connection when viewing pages (Bootstrap 5.3 loads from the jsDelivr CDN)

@@ -3,17 +3,22 @@
 {# Use the shared layout from base.html #}
 {% extends 'base.html' %}
 
+{# Heading area: fills the header block in base.html #}
 {% block header %}
   {# d-flex + justify-content-between puts the heading on the left and the button on the right #}
   <div class="d-flex justify-content-between align-items-center">
+    {# Page heading; the nested title block also sets the browser tab title #}
     <h1>{% block title %}Student Employees{% endblock %}</h1>
     {# Link styled as a blue button that opens the Add Student form #}
     <a class="btn btn-primary" href="{{ url_for('students.create') }}">Add Student</a>
   </div>
 {% endblock %}
 
+{# Main content: fills the content block in base.html #}
 {% block content %}
+  {# card = white box with a border; shadow-sm = light shadow #}
   <div class="card shadow-sm">
+    {# card-body adds padding inside the card #}
     <div class="card-body">
 
       {# Only build the table if there is at least one student #}
@@ -22,6 +27,7 @@
         <div class="table-responsive">
           {# table-hover highlights the row under the mouse; align-middle centers text vertically #}
           <table class="table table-hover align-middle mb-0">
+            {# thead = the header row with the column titles #}
             <thead>
               <tr>
                 <th>Name</th>
@@ -49,6 +55,7 @@
                       <span class="badge text-bg-secondary">Inactive</span>
                     {% endif %}
                   </td>
+                  {# Notes, or a dash if empty #}
                   <td>{{ student['notes'] or '—' }}</td>
                   {# text-end pushes the button to the right edge of the cell #}
                   <td class="text-end">

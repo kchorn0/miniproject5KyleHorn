@@ -3,10 +3,13 @@
 {# Use the shared layout from base.html #}
 {% extends 'base.html' %}
 
+{# Heading area: fills the header block in base.html #}
 {% block header %}
+  {# Page heading; the nested title block also sets the browser tab title #}
   <h1>{% block title %}System Status{% endblock %}</h1>
 {% endblock %}
 
+{# Main content: fills the content block in base.html #}
 {% block content %}
   {# Summary banner: green if everything is fine, yellow if any system has a problem.
      problems is the count sent from systems.py. #}
@@ -30,6 +33,7 @@
         {# border-2 border-{{ color }} = a thicker outline in the status color (green, yellow, or red).
            h-100 = every card in a row is the same height. #}
         <div class="card shadow-sm h-100 border-2 border-{{ color }}">
+          {# card-body adds padding inside the card #}
           <div class="card-body">
             {# System name on the left, status badge on the right #}
             <div class="d-flex justify-content-between align-items-start mb-2">
